@@ -33,15 +33,15 @@ const serverlessConfiguration: AWS = {
     custom: {
         esbuild: {
             bundle: true,
-            minify: false,
+            minify: true,
             sourcemap: true,
             exclude: ['aws-sdk'],
-            target: 'node14',
+            target: 'node18',
             define: { 'require.resolve': undefined },
             platform: 'node',
-            concurrency: 10,
-        },
-    },
+            concurrency: 10
+        }
+    }
 };
 
 module.exports = serverlessConfiguration;
