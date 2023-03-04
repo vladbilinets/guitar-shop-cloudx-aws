@@ -1,7 +1,6 @@
 export type HttpHeaders = Record<string, string | number>;
 
 export type ApiResponse = {
-    success: boolean;
     statusCode: number;
     body: string;
     headers: HttpHeaders;

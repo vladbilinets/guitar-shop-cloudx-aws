@@ -7,9 +7,11 @@ export const successResponse = (
     statusCode: number = STATUS_CODES.OK,
     headers: HttpHeaders = {}
 ): ApiResponse => ({
-    success: true,
     statusCode,
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+        success: true,
+        data: body
+    }),
     headers: {
         ...DEFAULT_HEADERS,
         ...headers
@@ -21,9 +23,9 @@ export const errorResponse = (
     error: ApiError,
     headers: HttpHeaders = {}
 ): ApiResponse => ({
-    success: false,
     statusCode: error.statusCode,
     body: JSON.stringify({
+        success: false,
         message: error.message || 'Something went wrong'
     }),
     headers: {
