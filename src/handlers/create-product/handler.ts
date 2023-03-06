@@ -2,21 +2,20 @@ import { APIGatewayProxyEvent, Handler } from 'aws-lambda';
 import { errorResponse, successResponse } from '@lib/utils/api-responses';
 import ApiInternalError from '@lib/errors/api-internal.error';
 import { ProductService } from '@lib/services';
-import ApiNotFoundError from '@lib/errors/api-not-found.error';
-import { API_MESSAGES } from '@lib/constants';
+import { ProductDTO } from '@lib/types';
+import { id } from 'aws-sdk/clients/datapipeline';
+import { API_MESSAGES, STATUS_CODES } from '@lib/constants';
 
-const getProductList: Handler = async (event: APIGatewayProxyEvent) => {
-    console.log('getProductList', event);
+const createProduct: Handler = async (event: APIGatewayProxyEvent) => {
+    console.log('createProduct', event);
 
     try {
         const productService = new ProductService();
-        const products = await productService.getAll();
+        const productDto: Omit<ProductDTO, id> = JSON.parse(event.body);
 
-        if (!products.length) {
-            return errorResponse(new ApiNotFoundError(API_MESSAGES.PRODUCTS_NOT_FOUND));
-        }
+        await productService.createProduct(productDto);
 
-        return successResponse(products);
+        return successResponse({ message: API_MESSAGES.PRODUCT_CREATED }, STATUS_CODES.CREATED);
     } catch (err) {
         console.error(err);
         return errorResponse(
@@ -26,4 +25,4 @@ const getProductList: Handler = async (event: APIGatewayProxyEvent) => {
     }
 };
 
-export const main = getProductList;
+export const main = createProduct;
