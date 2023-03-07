@@ -7,10 +7,22 @@ export type ApiResponse = {
     isBase64Encoded: boolean;
 };
 
-export type Product = {
+export interface IEntity {
     id: string;
+    [key: string]: number | string | boolean | Array<number> | Array<string> | null | undefined;
+}
+
+export interface IProduct extends IEntity {
     title: string;
     description: string;
-    count: number;
     price: number;
-};
+}
+
+export interface IStock extends IEntity {
+    product_id: string;
+    count: number;
+}
+
+export interface ProductDTO extends IProduct {
+    count: IStock['count'];
+}

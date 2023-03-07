@@ -1,9 +1,9 @@
 import DEFAULT_HEADERS from './default-headers';
-import ERROR_MESSAGES from './error-messages';
+import API_MESSAGES from './api-messages';
 import STATUS_CODES from './status-codes';
 
 export {
     DEFAULT_HEADERS,
-    ERROR_MESSAGES,
+    API_MESSAGES,
     STATUS_CODES
 };

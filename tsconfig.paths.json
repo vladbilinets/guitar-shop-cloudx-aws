@@ -4,6 +4,7 @@
         "paths": {
             "@handlers/*": ["src/handlers/*"],
             "@lib/*": ["src/lib/*"],
+            "@config/*": ["config/*"],
             "@__test__/*": ["__test__/*"]
         }
     }
