@@ -95,6 +95,7 @@ const config: Config = {
     moduleNameMapper: {
         '@handlers/(.*)': '<rootDir>/src/handlers/$1',
         '@lib/(.*)': '<rootDir>/src/lib/$1',
+        '@config/(.*)': '<rootDir>/config/$1',
         '@__test__/(.*)': '<rootDir>/__test__/$1',
     },
 

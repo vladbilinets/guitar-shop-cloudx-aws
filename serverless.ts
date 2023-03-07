@@ -1,8 +1,10 @@
 import type { AWS } from '@serverless/typescript';
 import {
     getProductList,
-    getProductById
+    getProductById,
+    createProduct
 } from '@handlers/index';
+import config from 'config';
 
 const serverlessConfiguration: AWS = {
     service: 'guitar-shop-cloudx-aws',
@@ -13,8 +15,9 @@ const serverlessConfiguration: AWS = {
     ],
     provider: {
         name: 'aws',
-        runtime: 'nodejs18.x',
-        region: 'eu-central-1',
+        runtime: 'nodejs16.x',
+        region: config.region,
+        role: 'arn:aws:iam::214342703654:role/DynamoDBLambdaAccessRole',
         stage: 'dev',
         apiGateway: {
             minimumCompressionSize: 1024,
@@ -27,7 +30,8 @@ const serverlessConfiguration: AWS = {
     },
     functions: {
         getProductList,
-        getProductById
+        getProductById,
+        createProduct
     },
     package: { individually: true },
     custom: {
@@ -36,7 +40,7 @@ const serverlessConfiguration: AWS = {
             minify: true,
             sourcemap: true,
             exclude: ['aws-sdk'],
-            target: 'node18',
+            target: 'node16',
             define: { 'require.resolve': undefined },
             platform: 'node',
             concurrency: 10
