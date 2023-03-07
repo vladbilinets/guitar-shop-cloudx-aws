@@ -23,8 +23,6 @@ describe('createProduct', () => {
         }, {});
         const { body } = await createProduct(event, {} as Context, () => {});
 
-        expect(JSON.parse(body)).toMatchObject({
-            body: { message: API_MESSAGES.PRODUCT_CREATED }
-        });
+        expect(JSON.parse(body)).toMatchObject({ message: API_MESSAGES.PRODUCT_CREATED });
     });
 });

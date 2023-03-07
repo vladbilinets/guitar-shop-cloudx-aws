@@ -22,7 +22,7 @@ describe('getProductById', () => {
 
         const { body } = await getProductById(event, {} as Context, () => {});
 
-        expect(JSON.parse(body)).toMatchObject({ body: productMock });
+        expect(JSON.parse(body)).toMatchObject(productMock);
     });
 
     it('SHOULD return error "Bad request" WHEN productId is not passed', async () => {

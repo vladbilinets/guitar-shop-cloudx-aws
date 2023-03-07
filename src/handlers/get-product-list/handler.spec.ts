@@ -24,6 +24,6 @@ describe('getProductsList', () => {
     it('SHOULD return all products', async () => {
         const { body } = await getProductList(event, {} as Context, () => {});
 
-        expect(JSON.parse(body)).toMatchObject({ body: productsMock });
+        expect(JSON.parse(body)).toMatchObject(productsMock);
     });
 });

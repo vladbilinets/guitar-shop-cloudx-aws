@@ -5,9 +5,10 @@ import { ProductService } from '@lib/services';
 import { ProductDTO } from '@lib/types';
 import { id } from 'aws-sdk/clients/datapipeline';
 import { API_MESSAGES, STATUS_CODES } from '@lib/constants';
+import { logEvent } from '@lib/utils/log-event';
 
 const createProduct: Handler = async (event: APIGatewayProxyEvent) => {
-    console.log('createProduct', event);
+    logEvent('createProduct', event);
 
     try {
         const productService = new ProductService();

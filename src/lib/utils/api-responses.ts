@@ -8,7 +8,7 @@ export const successResponse = (
     headers: HttpHeaders = {}
 ): ApiResponse => ({
     statusCode,
-    body: JSON.stringify({ body }),
+    body: JSON.stringify(body),
     headers: {
         ...DEFAULT_HEADERS,
         ...headers

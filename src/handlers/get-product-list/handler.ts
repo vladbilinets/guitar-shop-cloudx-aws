@@ -4,9 +4,10 @@ import ApiInternalError from '@lib/errors/api-internal.error';
 import { ProductService } from '@lib/services';
 import ApiNotFoundError from '@lib/errors/api-not-found.error';
 import { API_MESSAGES } from '@lib/constants';
+import { logEvent } from '@lib/utils/log-event';
 
 const getProductList: Handler = async (event: APIGatewayProxyEvent) => {
-    console.log('getProductList', event);
+    logEvent('getProductList', event);
 
     try {
         const productService = new ProductService();

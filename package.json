@@ -6,7 +6,10 @@
         "test": "jest",
         "test:watch": "jest --watchAll",
         "deploy": "sls deploy",
-        "seed:products": "ts-node src/scripts/seed-products.ts"
+        "seed:products": "ts-node src/scripts/seed-products.ts",
+        "sls:local:create-product": "sls invoke local -f createProduct --path src/handlers/create-product/mock.json",
+        "sls:local:get-product-by-id": "sls invoke local -f getProductById --path src/handlers/get-product-by-id/mock.json",
+        "sls:local:get-product-list": "sls invoke local -f getProductList"
     },
     "engines": {
         "node": ">=14.15.0"

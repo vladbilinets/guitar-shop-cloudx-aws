@@ -52,8 +52,6 @@ export default class DbClient {
             TransactItems: items
         });
 
-        console.log(123, items[0].Put.Item);
-
         transactionRequest.on('extractError', (resp) => {
             console.error(JSON.parse(resp.httpResponse.body.toString()));
         });
