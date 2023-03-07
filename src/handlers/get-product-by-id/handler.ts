@@ -4,26 +4,30 @@ import ApiInternalError from '@lib/errors/api-internal.error';
 import { ProductService } from '@lib/services';
 import ApiNotFoundError from '@lib/errors/api-not-found.error';
 import ApiBadRequestError from '@lib/errors/api-bad-request.error';
-import { ERROR_MESSAGES } from '@lib/constants';
+import { API_MESSAGES } from '@lib/constants';
+import { logEvent } from '@lib/utils/log-event';
 
 const getProductById: Handler = async (event: APIGatewayProxyEvent) => {
-    const productService = new ProductService();
+    logEvent('getProductById', event);
 
     try {
-        const { productId } = event.pathParameters;
-        if (!productId) {
-            return errorResponse(new ApiBadRequestError(ERROR_MESSAGES.PRODUCT_ID_NOT_PROVIDED));
+        if (!event?.pathParameters?.productId) {
+            return errorResponse(new ApiBadRequestError(API_MESSAGES.PRODUCT_ID_NOT_PROVIDED));
         }
 
-        const product = await productService.getById(productId);
+        const productService = new ProductService();
+        const product = await productService.getById(event.pathParameters.productId);
         if (!product) {
-            return errorResponse(new ApiNotFoundError(ERROR_MESSAGES.PRODUCT_NOT_FOUND));
+            return errorResponse(new ApiNotFoundError(API_MESSAGES.PRODUCT_NOT_FOUND));
         }
 
         return successResponse(product);
     } catch (err) {
         console.error(err);
-        return errorResponse(new ApiInternalError());
+        return errorResponse(
+            new ApiInternalError(`${API_MESSAGES.INTERNAL_SERVER_ERROR} (${err.message})`,),
+            { event }
+        );
     }
 };
 
