@@ -6,13 +6,15 @@
         "test": "jest",
         "test:watch": "jest --watchAll",
         "deploy": "sls deploy",
-        "sls:local:import-products-file": "sls invoke local -f importProductsFile --path src/handlers/import-products-file/mock.json"
+        "sls:local:import-products-file": "sls invoke local -f importProductsFile --path src/handlers/import-products-file/mock.json",
+        "sls:local:import-file-parser": "sls invoke local -f importFileParser --path src/handlers/import-file-parser/mock.json"
     },
     "engines": {
         "node": ">=14.15.0"
     },
     "dependencies": {
-        "aws-sdk": "^2.1328.0"
+        "aws-sdk": "^2.1328.0",
+        "csv-parser": "^3.0.0"
     },
     "devDependencies": {
         "@serverless/typescript": "^3.0.0",

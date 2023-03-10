@@ -17,7 +17,7 @@ const importProductsFile: Handler = async (event: APIGatewayProxyEvent) => {
         // Generate a Signed URL for the uploaded file
         const signedUrl = await S3.getSignedUrlPromise('putObject', {
             Bucket: config.buckets.import,
-            Key: `uploaded/${fileName}`,
+            Key: `${config.uploadedDir}/${fileName}`,
             Expires: 300 // URL will expire in 5 minutes
         });
 

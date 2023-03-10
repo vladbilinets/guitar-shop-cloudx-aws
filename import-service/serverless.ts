@@ -1,11 +1,12 @@
 import type { AWS } from '@serverless/typescript';
 import {
-    importProductsFile
+    importProductsFile,
+    importFileParser
 } from '@handlers/index';
 import config from 'config';
 
 const serverlessConfiguration: AWS = {
-    service: 'guitar-shop-cloudx-aws--import',
+    service: 'cloudx-aws--import',
     frameworkVersion: '3',
     plugins: [
         'serverless-esbuild',
@@ -19,8 +20,11 @@ const serverlessConfiguration: AWS = {
         iamRoleStatements: [
             {
                 Effect: 'Allow',
-                Action: 's3:*',
-                Resource: `arn:aws:s3:::${config.buckets.import}/*`
+                Action: ['s3:*'],
+                Resource: [
+                    `arn:aws:s3:::${config.buckets.import}`,
+                    `arn:aws:s3:::${config.buckets.import}/*`
+                ]
             }
         ],
         apiGateway: {
@@ -33,7 +37,8 @@ const serverlessConfiguration: AWS = {
         }
     },
     functions: {
-        importProductsFile
+        importProductsFile,
+        importFileParser
     },
     package: { individually: true },
     custom: {
