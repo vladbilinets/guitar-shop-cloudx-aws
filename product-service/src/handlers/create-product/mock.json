@@ -1,0 +1,6 @@
+{
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "body": "{\"title\": \"Product f25a8cda-27bc-469e-84e6-f04e163aecfd\",\"description\": \"Description f25a8cda-27bc-469e-84e6-f04e163aecfd\",\"price\": 9.99,\"count\": 5}"
+}
