@@ -5,6 +5,15 @@ import { S3Event } from 'aws-lambda/trigger/s3';
 import { logEvent } from '@lib/utils/log-event';
 import config from '@config/index';
 
+const s3MoveFileToParsedDirectory = async (s3: AWS.S3, filepath: string) => {
+    const Bucket = config.buckets.import;
+    const CopySource = `${config.buckets.import}/${filepath}`;
+    const Key = filepath.replace(config.uploadedDir, config.parsedDir);
+
+    await s3.copyObject({ Key, CopySource, Bucket }).promise();
+    await s3.deleteObject({ Key: filepath, Bucket }).promise();
+}
+
 const importFileParser: Handler = async (event: S3Event) => {
     logEvent('importFileParser', event);
 
@@ -28,8 +37,9 @@ const importFileParser: Handler = async (event: S3Event) => {
                 .on('error', (error) => {
                     reject(`CSV parsing error: ${error}`);
                 })
-                .on('end', () => {
+                .on('end', async () => {
                     resolve('CSV parsing complete.');
+                    await s3MoveFileToParsedDirectory(S3, fileKey);
                 });
         });
     } catch (err) {

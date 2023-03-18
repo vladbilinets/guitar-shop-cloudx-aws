@@ -5,7 +5,8 @@ const config = {
     buckets: {
         import: 'guitar-shop-cloudx-aws-import'
     },
-    uploadedDir: 'uploaded'
+    uploadedDir: 'uploaded',
+    parsedDir: 'parsed',
 };
 
 export default config;
