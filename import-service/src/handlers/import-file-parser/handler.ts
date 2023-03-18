@@ -5,12 +5,11 @@ import { S3Event } from 'aws-lambda/trigger/s3';
 import { logEvent } from '@lib/utils/log-event';
 import config from '@config/index';
 
-const S3 = new AWS.S3({ signatureVersion: 'v4', region: config.region });
-
 const importFileParser: Handler = async (event: S3Event) => {
     logEvent('importFileParser', event);
 
     try {
+        const S3 = new AWS.S3({ signatureVersion: 'v4', region: config.region });
         const fileKey = event.Records[0].s3.object.key;
 
         // Get the object from S3
