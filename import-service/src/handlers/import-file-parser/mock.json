@@ -1,0 +1,17 @@
+{
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "Records": [
+        {
+            "s3": {
+                "bucket": {
+                    "name": "guitar-shop-cloudx-aws--import"
+                },
+                "object": {
+                    "key": "uploaded/products.csv"
+                }
+            }
+        }
+    ]
+}
