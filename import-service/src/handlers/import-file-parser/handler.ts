@@ -38,8 +38,8 @@ const importFileParser: Handler = async (event: S3Event) => {
                     reject(`CSV parsing error: ${error}`);
                 })
                 .on('end', async () => {
-                    resolve('CSV parsing complete.');
                     await s3MoveFileToParsedDirectory(S3, fileKey);
+                    resolve('CSV parsing complete.');
                 });
         });
     } catch (err) {
