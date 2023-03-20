@@ -1,13 +1,9 @@
 import type { AWS } from '@serverless/typescript';
-import {
-    getProductList,
-    getProductById,
-    createProduct
-} from '@handlers/index';
+import * as functions from '@handlers/index';
 import config from 'config';
 
 const serverlessConfiguration: AWS = {
-    service: 'guitar-shop-cloudx-aws',
+    service: 'guitar-shop-cloudx',
     frameworkVersion: '3',
     plugins: [
         'serverless-esbuild',
@@ -21,18 +17,55 @@ const serverlessConfiguration: AWS = {
         stage: 'dev',
         apiGateway: {
             minimumCompressionSize: 1024,
-            shouldStartNameWithService: true,
+            shouldStartNameWithService: true
         },
         environment: {
             AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-            NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+            NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
         },
+        iamRoleStatements: [
+            {
+                Effect: 'Allow',
+                Action: 'sqs:*',
+                Resource: { 'Fn::GetAtt': [config.sqsCatalogQueue, 'Arn'] },
+            },
+            {
+                Effect: 'Allow',
+                Action: 'sns:*',
+                Resource: { Ref: config.snsCreateTopic },
+            },
+        ]
     },
-    functions: {
-        getProductList,
-        getProductById,
-        createProduct
+    resources: {
+        Resources: {
+            [config.sqsCatalogQueue]: {
+                Type: 'AWS::SQS::Queue',
+                Properties: { QueueName: config.sqsCatalogQueue }
+            },
+            [config.snsCreateTopic]: {
+                Type: 'AWS::SNS::Topic',
+                Properties: { TopicName: config.snsCreateTopic }
+            },
+            [config.subscriptions.createProduct]: {
+                Type: 'AWS::SNS::Subscription',
+                Properties: {
+                    Protocol: 'email',
+                    Endpoint: config.email.primary,
+                    TopicArn: { Ref: config.snsCreateTopic }
+                }
+            },
+            [config.subscriptions.expensivePosition]: {
+                Type: 'AWS::SNS::Subscription',
+                Properties: {
+                    Protocol: 'email',
+                    FilterPolicy: { ExpensivePosition: ['true'] },
+                    Endpoint: config.email.secondary,
+                    TopicArn: { Ref: config.snsCreateTopic }
+                }
+            }
+        }
     },
+    functions,
     package: { individually: true },
     custom: {
         esbuild: {

@@ -1,5 +1,5 @@
 {
-    "name": "guitar-shop-cloudx-aws",
+    "name": "guitar-shop-cloudx",
     "version": "1.0.0",
     "main": "serverless.ts",
     "scripts": {
@@ -7,6 +7,7 @@
         "test:watch": "jest --watchAll",
         "deploy": "sls deploy",
         "seed:products": "ts-node src/scripts/seed-products.ts",
+        "sls:local:catalog-batch-process": "sls invoke local -f catalogBatchProcess --path src/handlers/catalog-batch-process/mock.json",
         "sls:local:create-product": "sls invoke local -f createProduct --path src/handlers/create-product/mock.json",
         "sls:local:get-product-by-id": "sls invoke local -f getProductById --path src/handlers/get-product-by-id/mock.json",
         "sls:local:get-product-list": "sls invoke local -f getProductList"
@@ -15,7 +16,8 @@
         "node": ">=14.15.0"
     },
     "dependencies": {
-        "aws-sdk": "^2.1328.0"
+        "aws-sdk": "^2.1328.0",
+        "aws-sdk-mock": "^5.8.0"
     },
     "devDependencies": {
         "@serverless/typescript": "^3.0.0",

@@ -25,7 +25,12 @@ const serverlessConfiguration: AWS = {
                     `arn:aws:s3:::${config.buckets.import}`,
                     `arn:aws:s3:::${config.buckets.import}/*`
                 ]
-            }
+            },
+            {
+                Effect: 'Allow',
+                Action: 'sqs:SendMessage',
+                Resource: { 'Fn::GetAtt': [config.sqsCatalogQueue, 'Arn'] },
+            },
         ],
         apiGateway: {
             minimumCompressionSize: 1024,
