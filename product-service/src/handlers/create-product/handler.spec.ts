@@ -3,11 +3,9 @@ import { main as createProduct } from '@handlers/create-product/handler';
 import { ApiGatewayProxyEventFactory } from '@lib/utils/api-gateway-proxy-event-factory';
 import { API_MESSAGES } from '@lib/constants';
 
-jest.mock('@lib/services/product.service.ts', () => ({
-    default: function () {
-        return { createProduct: () => Promise.resolve() }
-    }
-}));
+jest.mock('@lib/services/product.service.ts', () => function() {
+    return { createProduct: () => Promise.resolve() }
+});
 
 describe('createProduct', () => {
     beforeEach(() => {

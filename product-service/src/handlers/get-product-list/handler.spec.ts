@@ -7,11 +7,9 @@ const productsMock: ProductDTO[] = [
     { id: 'id-1', title: 'Product 1', description: 'Description 1', price: 1, count: 1 },
     { id: 'id-2', title: 'Product 2', description: 'Description 2', price: 2, count: 2 }
 ];
-jest.mock('@lib/services/product.service.ts', () => ({
-    default: function () {
-        return { getAll: () => Promise.resolve(productsMock) }
-    }
-}));
+jest.mock('@lib/services/product.service.ts', () => function() {
+    return { getAll: () => Promise.resolve(productsMock) }
+});
 
 describe('getProductsList', () => {
     let event: APIGatewayProxyEvent;

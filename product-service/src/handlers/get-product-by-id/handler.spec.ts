@@ -5,11 +5,9 @@ import { API_MESSAGES, STATUS_CODES } from '@lib/constants';
 import { ProductDTO } from '@lib/types';
 
 const productMock: ProductDTO = { id: 'id-1', title: 'Product 1', description: 'Description 1', price: 1, count: 1 };
-jest.mock('@lib/services/product.service.ts', () => ({
-    default: function () {
-        return { getById: (id: string) => Promise.resolve(id === productMock.id ? productMock : null) }
-    }
-}));
+jest.mock('@lib/services/product.service.ts', () => function() {
+    return { getById: (id: string) => Promise.resolve(id === productMock.id ? productMock : null) }
+});
 
 describe('getProductById', () => {
     beforeEach(() => {

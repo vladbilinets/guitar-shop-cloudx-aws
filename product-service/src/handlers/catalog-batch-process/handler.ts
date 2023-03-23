@@ -20,8 +20,6 @@ export const catalogBatchProcess = async (event: SQSEvent) => {
         // Create products
         await Promise.all(products.map(productService.createProduct.bind(productService)));
 
-        console.log(config.snsCreateTopic);
-
         // Send emails
         const sns = new AWS.SNS();
         await sns.publish({
