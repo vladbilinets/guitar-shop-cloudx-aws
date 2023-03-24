@@ -27,31 +27,31 @@ const serverlessConfiguration: AWS = {
             {
                 Effect: 'Allow',
                 Action: 'sqs:*',
-                Resource: { 'Fn::GetAtt': [config.sqsCatalogQueue, 'Arn'] },
+                Resource: { Ref: config.sqs.catalogQueue.name }
             },
             {
                 Effect: 'Allow',
                 Action: 'sns:*',
-                Resource: { Ref: config.snsCreateTopic },
-            },
+                Resource: { Ref: config.sns.createTopic.name }
+            }
         ]
     },
     resources: {
         Resources: {
-            [config.sqsCatalogQueue]: {
+            [config.sqs.catalogQueue.name]: {
                 Type: 'AWS::SQS::Queue',
-                Properties: { QueueName: config.sqsCatalogQueue }
+                Properties: { QueueName: config.sqs.catalogQueue.name }
             },
-            [config.snsCreateTopic]: {
+            [config.sns.createTopic.name]: {
                 Type: 'AWS::SNS::Topic',
-                Properties: { TopicName: config.snsCreateTopic }
+                Properties: { TopicName: config.sns.createTopic.name }
             },
             [config.subscriptions.createProduct]: {
                 Type: 'AWS::SNS::Subscription',
                 Properties: {
                     Protocol: 'email',
                     Endpoint: config.email.primary,
-                    TopicArn: { Ref: config.snsCreateTopic }
+                    TopicArn: { Ref: config.sns.createTopic.name }
                 }
             },
             [config.subscriptions.expensivePosition]: {
@@ -60,7 +60,50 @@ const serverlessConfiguration: AWS = {
                     Protocol: 'email',
                     FilterPolicy: { ExpensivePosition: ['true'] },
                     Endpoint: config.email.secondary,
-                    TopicArn: { Ref: config.snsCreateTopic }
+                    TopicArn: { Ref: config.sns.createTopic.name }
+                }
+            },
+            LambdaExecutorRole: {
+                Type: 'AWS::IAM::Role',
+                Properties: {
+                    RoleName: 'LambdaExecutorRole',
+                    Description: 'CatalogBatchProcess executor role',
+                    ManagedPolicyArns: [
+                        'arn:aws:iam::aws:policy/AmazonSQSFullAccess',
+                        'arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole'
+                    ],
+                    AssumeRolePolicyDocument: {
+                        Version: '2012-10-17',
+                        Statement: {
+                            Effect: 'Allow',
+                            Principal: { Service: 'lambda.amazonaws.com' },
+                            Action: 'sts:AssumeRole'
+                        }
+                    },
+                    Policies: [
+                        {
+                            PolicyName: 'SNS_Policy',
+                            PolicyDocument: {
+                                Version: '2012-10-17',
+                                Statement: {
+                                    Effect: 'Allow',
+                                    Action: ['sns:*'],
+                                    Resource: '*'
+                                }
+                            }
+                        },
+                        {
+                            PolicyName: 'SQS_Policy',
+                            PolicyDocument: {
+                                Version: '2012-10-17',
+                                Statement: {
+                                    Effect: 'Allow',
+                                    Action: ['sqs:*'],
+                                    Resource: '*'
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         }

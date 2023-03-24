@@ -1,5 +1,3 @@
-import AWSMock from 'aws-sdk-mock';
-import AWS from 'aws-sdk';
 import { main as catalogBatchProcess } from './handler';
 import { SQSRecord } from 'aws-lambda';
 import { ProductDTO } from '@lib/types';
@@ -35,21 +33,17 @@ jest.mock('@lib/services/product.service.ts', () => function() {
     return { createProduct: mockedCreateProduct }
 });
 
+const mockedEmailPublish = jest.fn().mockImplementation(() => Promise.resolve());
+jest.mock('@lib/services/email.service.ts', () => function() {
+    return { publish: mockedEmailPublish }
+});
+
 describe('catalogBatchProcess', () => {
-
-    beforeEach(() => {
-        AWSMock.setSDKInstance(AWS);
-    });
-
     afterEach(() => {
-        AWSMock.restore('SNS');
         jest.resetAllMocks();
     });
 
     it('SHOULD handle an event from SQS and publish an event to SNS', async () => {
-        const mockedSnsPublish = jest.fn().mockImplementation((_, callback) => callback(undefined, {}));
-        AWSMock.mock('SNS', 'publish', mockedSnsPublish);
-
         const result = await catalogBatchProcess({
             Records: eventRecords.map((record) => ({
                 ...record,
@@ -57,7 +51,7 @@ describe('catalogBatchProcess', () => {
             } as SQSRecord))
         });
 
-        expect(mockedSnsPublish).toBeCalled();
+        expect(mockedEmailPublish).toBeCalled();
         expect(mockedCreateProduct).toBeCalled();
         expect(result).toMatchObject({
             statusCode: 200,
@@ -66,7 +60,7 @@ describe('catalogBatchProcess', () => {
     });
 
     it('SHOULD return 500 if there is an error', async () => {
-        AWSMock.mock('SNS', 'publish', () => {
+        mockedEmailPublish.mockImplementation(() => {
             throw new Error('500 error');
         });
 
