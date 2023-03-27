@@ -15,6 +15,7 @@ const {
 } = process.env;
 
 const config = {
+    accountId: ACCOUNT_ID,
     region: REGION as AWS['provider']['region'],
     stage: STAGE,
     sqs: {
