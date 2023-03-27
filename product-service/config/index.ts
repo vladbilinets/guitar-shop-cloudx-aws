@@ -1,15 +1,25 @@
+import path from 'path';
+import dotenv from 'dotenv';
 import { AWS } from '@serverless/typescript';
 
-const ACCOUNT_ID = 214342703654;
-const REGION: AWS['provider']['region'] = 'eu-central-1';
-const PRODUCTS_TABLE = 'PRODUCTS_TABLE';
-const STOCK_TABLE = 'STOCK_TABLE';
-const SQS_CATALOG_QUEUE = 'catalogItemsQueue';
-const SNS_CREATE_TOPIC = 'createProductTopic';
+dotenv.config({ path: path.join(__dirname, '../../', '.env') });
+
+const {
+    ACCOUNT_ID,
+    STAGE,
+    REGION,
+    PRODUCTS_TABLE,
+    STOCK_TABLE,
+    SQS_CATALOG_QUEUE,
+    SNS_CREATE_TOPIC,
+    PRIMARY_EMAIL,
+    SECONDARY_EMAIL
+} = process.env;
 
 const config = {
     accountId: ACCOUNT_ID,
-    region: REGION,
+    region: REGION as AWS['provider']['region'],
+    stage: STAGE,
     sqs: {
         catalogQueue: {
             name: SQS_CATALOG_QUEUE,
@@ -30,8 +40,8 @@ const config = {
         }
     },
     email: {
-        primary: 'vladbilinets@gmail.com',
-        secondary: 'vladyslav_bilynets@epam.com'
+        primary: PRIMARY_EMAIL,
+        secondary: SECONDARY_EMAIL
     },
     subscriptions: {
         createProduct: 'CreateProductSubscription',

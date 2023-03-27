@@ -1,20 +1,22 @@
 import type { AWS } from '@serverless/typescript';
 import * as functions from '@handlers/index';
-import config from 'config';
+import config from '@config/index';
 
 const serverlessConfiguration: AWS = {
     service: 'guitar-shop-cloudx',
     frameworkVersion: '3',
     plugins: [
         'serverless-esbuild',
-        'serverless-offline'
+        'serverless-offline',
+        'serverless-dotenv-plugin'
     ],
     provider: {
         name: 'aws',
         runtime: 'nodejs16.x',
         region: config.region,
-        role: 'arn:aws:iam::214342703654:role/DynamoDBLambdaAccessRole',
-        stage: 'dev',
+        deploymentMethod: 'direct',
+        role: `arn:aws:iam::${config.accountId}:role/DynamoDBLambdaAccessRole`,
+        stage: config.stage,
         apiGateway: {
             minimumCompressionSize: 1024,
             shouldStartNameWithService: true
@@ -111,6 +113,14 @@ const serverlessConfiguration: AWS = {
     functions,
     package: { individually: true },
     custom: {
+        dotenv: {
+            path: '../.env',
+            logging: true,
+            required: {
+                env: ['ACCOUNT_ID'],
+                file: true
+            }
+        },
         esbuild: {
             bundle: true,
             minify: true,
