@@ -3,20 +3,21 @@ import {
     importProductsFile,
     importFileParser
 } from '@handlers/index';
-import config from 'config';
+import config from '@config/index';
 
 const serverlessConfiguration: AWS = {
     service: 'cloudx-aws--import',
     frameworkVersion: '3',
     plugins: [
         'serverless-esbuild',
-        'serverless-offline'
+        'serverless-offline',
+        'serverless-dotenv-plugin'
     ],
     provider: {
         name: 'aws',
         runtime: 'nodejs16.x',
         region: config.region,
-        stage: 'dev',
+        stage: config.stage,
         iamRoleStatements: [
             {
                 Effect: 'Allow',
@@ -25,6 +26,11 @@ const serverlessConfiguration: AWS = {
                     `arn:aws:s3:::${config.buckets.import}`,
                     `arn:aws:s3:::${config.buckets.import}/*`
                 ]
+            },
+            {
+                Effect: 'Allow',
+                Action: 'sqs:SendMessage',
+                Resource: config.sqs.catalogQueue.arn
             }
         ],
         apiGateway: {
@@ -42,6 +48,14 @@ const serverlessConfiguration: AWS = {
     },
     package: { individually: true },
     custom: {
+        dotenv: {
+            path: '../.env',
+            logging: true,
+            required: {
+                env: ['ACCOUNT_ID'],
+                file: true
+            }
+        },
         esbuild: {
             bundle: true,
             minify: true,

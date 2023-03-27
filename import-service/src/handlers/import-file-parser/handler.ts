@@ -18,8 +18,9 @@ const importFileParser: Handler = async (event: S3Event) => {
     logEvent('importFileParser', event);
 
     try {
-        const S3 = new AWS.S3({ signatureVersion: 'v4', region: config.region });
         const fileKey = event.Records[0].s3.object.key;
+        const S3 = new AWS.S3({ signatureVersion: 'v4', region: config.region });
+        const SQS = new AWS.SQS();
 
         // Get the object from S3
         const s3Stream = S3.getObject({
@@ -31,8 +32,11 @@ const importFileParser: Handler = async (event: S3Event) => {
         await new Promise((resolve, reject) => {
             s3Stream
                 .pipe(csvParser())
-                .on('data', (data) => {
-                    console.log('CSV item:', data);
+                .on('data', async (data) => {
+                    await SQS.sendMessage({
+                        QueueUrl: config.sqsCatalogQueue,
+                        MessageBody: JSON.stringify(data)
+                    }).promise();
                 })
                 .on('error', (error) => {
                     reject(`CSV parsing error: ${error}`);

@@ -4,6 +4,7 @@ const API_MESSAGES = (() => ({
     BAD_REQUEST: 'Bad request',
     INTERNAL_SERVER_ERROR: 'Internal server error',
     SOMETHING_WENT_WRONG: 'Something went wrong!',
+    SUCCESS: 'Success',
 
     // products service
     PRODUCT_CREATED: 'Product created',

@@ -1,0 +1,15 @@
+{
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "Records": [
+        {
+            "messageId": "id-1",
+            "body": "{\"title\": \"title1\",\"description\": \"description1\",\"price\": 1,\"count\": 1}"
+        },
+        {
+            "messageId": "id-2",
+            "body": "{\"title\": \"title2\",\"description\": \"description2\",\"price\": 2,\"count\": 2}"
+        }
+    ]
+}
