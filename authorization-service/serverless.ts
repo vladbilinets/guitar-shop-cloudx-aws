@@ -1,12 +1,9 @@
 import type { AWS } from '@serverless/typescript';
-import {
-    importProductsFile,
-    importFileParser
-} from '@handlers/index';
+import * as functions from '@handlers/index';
 import config from '@config/index';
 
 const serverlessConfiguration: AWS = {
-    service: 'cloudx-aws--import',
+    service: 'cloudx-aws--authorization',
     frameworkVersion: '3',
     plugins: [
         'serverless-esbuild',
@@ -19,21 +16,6 @@ const serverlessConfiguration: AWS = {
         region: config.region,
         stage: config.stage,
         deploymentMethod: 'direct',
-        iamRoleStatements: [
-            {
-                Effect: 'Allow',
-                Action: ['s3:*'],
-                Resource: [
-                    `arn:aws:s3:::${config.buckets.import}`,
-                    `arn:aws:s3:::${config.buckets.import}/*`
-                ]
-            },
-            {
-                Effect: 'Allow',
-                Action: 'sqs:SendMessage',
-                Resource: config.sqs.catalogQueue.arn
-            }
-        ],
         apiGateway: {
             minimumCompressionSize: 1024,
             shouldStartNameWithService: true
@@ -43,26 +25,7 @@ const serverlessConfiguration: AWS = {
             NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
         }
     },
-    functions: {
-        importProductsFile,
-        importFileParser
-    },
-    resources: {
-       Resources: {
-           Unauthorized: {
-               Type: 'AWS::ApiGateway::GatewayResponse',
-               Properties: {
-                   ResponseType: 'DEFAULT_4XX',
-                   RestApiId: { Ref: 'ApiGatewayRestApi' },
-                   ResponseParameters: {
-                       'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
-                       'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
-                       'gatewayresponse.header.Access-Control-Allow-Methods': "'*'"
-                   }
-               }
-           }
-       }
-    },
+    functions,
     package: { individually: true },
     custom: {
         dotenv: {

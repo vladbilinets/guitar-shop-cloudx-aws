@@ -1,14 +1,16 @@
+import type { AWS } from '@serverless/typescript';
 import { handlerPath } from '@lib/utils/handler-resolver';
 
-export default {
+const handler: AWS['functions'][keyof AWS['functions']] = {
     handler: `${handlerPath(__dirname)}/handler.main`,
     events: [
         {
             http: {
                 method: 'get',
-                path: 'products/{productId}',
-                cors: true
+                path: 'auth'
             }
         }
     ]
 };
+
+export default handler;
