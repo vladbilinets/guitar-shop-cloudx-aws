@@ -10,12 +10,12 @@ const handler: AWS['functions'][keyof AWS['functions']] = {
             http: {
                 method: 'get',
                 path: 'import',
-                cors: false,
                 request: schema,
                 authorizer: {
                     type: 'token',
                     arn: `arn:aws:lambda:${config.region}:${config.accountId}:function:cloudx-aws--authorization-dev-basicAuthorizer`
-                }
+                },
+                cors: true
             }
         }
     ]
